@@ -1,30 +1,47 @@
-using UnityEngine;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class MoleculeController : MonoBehaviour
 {
-    public List<GameObject> atomPrefabs;
+    public MoleculeData data;
+    public GameObject atomPrefab;
 
-    void Start()
+    private XRGrabInteractable grab;
+
+    private void Awake()
     {
-        var grab = GetComponent<XRGrabInteractable>();
+        grab = GetComponent<XRGrabInteractable>();
+    }
+
+    private void OnEnable()
+    {
         grab.selectEntered.AddListener(OnGrab);
+    }
+
+    private void OnDisable()
+    {
+        grab.selectEntered.RemoveListener(OnGrab);
     }
 
     void OnGrab(SelectEnterEventArgs args)
     {
+        Debug.Log("Breaking molecule: " + data.moleculeName);
+
         BreakMolecule();
     }
 
     void BreakMolecule()
     {
-        Vector3 pos = transform.position;
+        Vector3 center = transform.position;
 
-        foreach (var atom in atomPrefabs)
+        foreach (var atomType in data.requiredAtoms)
         {
-            Instantiate(atom, pos + Random.insideUnitSphere * 0.2f, Quaternion.identity);
+            Vector3 offset = Random.insideUnitSphere * 0.3f;
+
+            GameObject atom = Instantiate(atomPrefab, center + offset, Quaternion.identity);
+
+            atom.GetComponent<AtomController>().atomType = atomType;
         }
 
         Destroy(gameObject);

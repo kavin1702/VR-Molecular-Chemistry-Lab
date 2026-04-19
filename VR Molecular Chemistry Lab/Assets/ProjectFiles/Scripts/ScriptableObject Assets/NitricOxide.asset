@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: NitricOxide
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Nitric Oxide
+  formula: NO
+  bondType: 'Double Bond '
   requiredAtoms: 0300000001000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 1507366136272765127, guid: b71915ae43ff2c84eb6c6074c5f9b92a, type: 3}

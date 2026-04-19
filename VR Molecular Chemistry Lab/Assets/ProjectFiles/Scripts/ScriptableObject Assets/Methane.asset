@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Methane
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Methane
+  formula: "CH\u2084"
+  bondType: Covalent (Single)
   requiredAtoms: 0200000000000000000000000000000000000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 7273538536201045991, guid: cc0e472b1016f6141b6dcd11d651d785, type: 3}

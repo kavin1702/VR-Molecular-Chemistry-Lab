@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Water
+  formula: " H\u2082O"
+  bondType: Covalent (Single)
   requiredAtoms: 000000000000000001000000
-  moleculePrefab: {fileID: 3686041039853854355, guid: 72a2852264138f14c91ebdc36e578a60, type: 3}
+  moleculePrefab: {fileID: 6690073129258955757, guid: 7f9dafc9470a09d43b9f0714b7c9ee75, type: 3}

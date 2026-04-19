@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: AMMONIA
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: AMMONIA
+  formula: "NH\u2083"
+  bondType: 'Covalent (Single) '
   requiredAtoms: 03000000000000000000000000000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 4215787724239472459, guid: 877440b3f5d9f3f4681f6522a88b0f16, type: 3}

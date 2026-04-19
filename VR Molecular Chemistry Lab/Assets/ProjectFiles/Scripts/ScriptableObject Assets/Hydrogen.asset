@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Hydrogen
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Hydrogen Gas
+  formula: " H\u2082"
+  bondType: ' Single Bond'
   requiredAtoms: 0000000000000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 1326927306569531800, guid: 9c644e564a63e3d4e832b35bc782bd75, type: 3}

@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Oxygen
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Oxygen Gas
+  formula: "O\u2082"
+  bondType: Double Bond
   requiredAtoms: 0100000001000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 456385511067110783, guid: 3da44bde216cf57488990f45789fb298, type: 3}

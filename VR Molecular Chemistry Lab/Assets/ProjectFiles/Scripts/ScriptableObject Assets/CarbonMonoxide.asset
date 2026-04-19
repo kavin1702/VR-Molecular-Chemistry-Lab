@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: CarbonMonoxide
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Carbon Monoxide
+  formula: CO
+  bondType: ' Triple Bond'
   requiredAtoms: 0200000001000000
-  moleculePrefab: {fileID: 0}
+  moleculePrefab: {fileID: 43410646270966184, guid: cc7611efffc9c804084e49724c03c6dc, type: 3}
