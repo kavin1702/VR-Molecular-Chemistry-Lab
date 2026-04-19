@@ -15,5 +15,9 @@ MonoBehaviour:
   moleculeName: Oxygen Gas
   formula: "O\u2082"
   bondType: Double Bond
-  requiredAtoms: 0100000001000000
+  requiredAtoms:
+  - atomType: 1
+    count: 1
+  - atomType: 1
+    count: 1
   moleculePrefab: {fileID: 456385511067110783, guid: 3da44bde216cf57488990f45789fb298, type: 3}

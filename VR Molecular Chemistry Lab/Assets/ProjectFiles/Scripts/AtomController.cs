@@ -7,51 +7,63 @@ public class AtomController : MonoBehaviour
     public AtomType atomType;
 
     private XRGrabInteractable grab;
+    private MoleculeZone currentZone;
 
     private void Awake()
     {
         grab = GetComponent<XRGrabInteractable>();
     }
 
-    void Start()
-    {
-        Renderer r = GetComponent<Renderer>();
-
-        switch (atomType)
-        {
-            case AtomType.Hydrogen:
-                r.material.color = Color.white;
-                break;
-
-            case AtomType.Oxygen:
-                r.material.color = Color.red;
-                break;
-
-            case AtomType.Carbon:
-                r.material.color = Color.black;
-                break;
-
-            case AtomType.Nitrogen:
-                r.material.color = Color.blue;
-                break;
-        }
-    }   
-
     private void OnEnable()
     {
+        grab.selectEntered.AddListener(OnGrab);
         grab.selectExited.AddListener(OnRelease);
     }
 
     private void OnDisable()
     {
+        grab.selectEntered.RemoveListener(OnGrab);
         grab.selectExited.RemoveListener(OnRelease);
+    }
+
+    // ✅ THIS FIXES YOUR ERROR
+    public void SetAtomType(AtomType type)
+    {
+        atomType = type;
+    }
+
+    void OnGrab(SelectEnterEventArgs args)
+    {
+        Debug.Log("🟡 Grabbed: " + atomType);
+
+        AudioManager audio = FindObjectOfType<AudioManager>();
+        if (audio != null)
+            audio.PlayGrab();
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("MoleculeZone"))
+        {
+            currentZone = other.GetComponent<MoleculeZone>();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("MoleculeZone"))
+        {
+            currentZone = null;
+        }
     }
 
     void OnRelease(SelectExitEventArgs args)
     {
-        Debug.Log("Released: " + atomType);
+        Debug.Log("🖐 Released: " + atomType);
 
-        // 🔥 Tell zone to check
-        MoleculeZone.Instance.CheckMolecule();
+        if (currentZone != null)
+        {
+            currentZone.CheckMolecule();
+        }
     }
 }

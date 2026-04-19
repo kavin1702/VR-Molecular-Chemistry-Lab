@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
   data: {fileID: 11400000, guid: 8555291b85c71ea40ad8dfdb52a0b8a0, type: 2}
-  atomPrefab: {fileID: 5071347650733509308, guid: 041a61d4b911f5941810b7008023cb22, type: 3}
+  atomDatabase: {fileID: 0}
 --- !u!54 &-6232102737675381758
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -529,8 +529,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0

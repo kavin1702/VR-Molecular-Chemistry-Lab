@@ -15,5 +15,9 @@ MonoBehaviour:
   moleculeName: Carbon Dioxide
   formula: "CO\u2082"
   bondType: Double Bond
-  requiredAtoms: 020000000100000001000000
+  requiredAtoms:
+  - atomType: 2
+    count: 1
+  - atomType: 1
+    count: 2
   moleculePrefab: {fileID: 8750464618001674967, guid: 8e7972b7737c37948a2b2724a2c9dc56, type: 3}

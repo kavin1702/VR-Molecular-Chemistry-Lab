@@ -1,86 +1,50 @@
-﻿//using UnityEngine;
-//using TMPro;
-//using System.Collections;
-//using System.Collections.Generic;
-
-//public class UIManager : MonoBehaviour
-//{
-//    public GameObject infoPanel;
-//    public TextMeshProUGUI infoText;
-
-//    public Transform libraryContent;
-//    public GameObject textPrefab;
-
-//    private HashSet<string> discovered = new HashSet<string>();
-
-//    public void ShowMolecule(MoleculeData data)
-//    {
-//        // 🟣 INFO PANEL
-//        infoPanel.SetActive(true);
-
-//        infoText.text =
-//            "Name: " + data.moleculeName + "\n" +
-//            "Formula: " + data.formula + "\n" +
-//            "Bond: " + data.bondType;
-
-//        StopAllCoroutines();
-//        StartCoroutine(HideInfo());
-
-//        // 🟣 LIBRARY PANEL
-//        if (!discovered.Contains(data.moleculeName))
-//        {
-//            discovered.Add(data.moleculeName);
-
-//            GameObject entry = Instantiate(textPrefab, libraryContent);
-//            entry.GetComponent<TextMeshProUGUI>().text =
-//                data.moleculeName + " (" + data.formula + ")";
-//        }
-//    }
-
-//    IEnumerator HideInfo()
-//    {
-//        yield return new WaitForSeconds(3f);
-//        infoPanel.SetActive(false);
-//    }
-//}
-
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("INFO PANEL")]
+    public TextMeshProUGUI hintText;
+
+    public GameObject infoPanel;
     public TextMeshProUGUI infoText;
 
-    [Header("LIBRARY")]
     public Transform libraryContent;
     public GameObject textPrefab;
 
-    [Header("FEEDBACK UI")]
     public GameObject successUI;
     public GameObject errorUI;
     public GameObject saveUI;
 
     private HashSet<string> discovered = new HashSet<string>();
+    private Coroutine infoRoutine;
 
-    // 🟢 CALLED WHEN MOLECULE CREATED
+    void Start()
+    {
+        hintText.gameObject.SetActive(true);
+        infoPanel.SetActive(false);
+
+        successUI.SetActive(false);
+        errorUI.SetActive(false);
+        saveUI.SetActive(false);
+    }
+
     public void ShowMolecule(MoleculeData data)
     {
-        // 🟦 INFO PANEL TEXT
+        if (infoRoutine != null)
+            StopCoroutine(infoRoutine);
+
+        hintText.gameObject.SetActive(false);
+        infoPanel.SetActive(true);
+
         infoText.text =
             "Name: " + data.moleculeName + "\n" +
             "Formula: " + data.formula + "\n" +
             "Bond: " + data.bondType;
 
-        StopAllCoroutines();
-        StartCoroutine(HideInfo());
-
-        // 🟩 SUCCESS UI
         ShowSuccess();
 
-        // 📚 LIBRARY ADD (ONLY ONCE)
         if (!discovered.Contains(data.moleculeName))
         {
             discovered.Add(data.moleculeName);
@@ -89,54 +53,43 @@ public class UIManager : MonoBehaviour
             entry.GetComponent<TextMeshProUGUI>().text =
                 data.moleculeName + " (" + data.formula + ")";
 
-            // 💾 SAVE UI (FIRST TIME ONLY)
             ShowSave();
         }
+
+        infoRoutine = StartCoroutine(HideInfoAfterDelay(5f));
     }
 
-    // ❌ ERROR UI
-    public void ShowError(string message = "Incomplete Structure")
+    IEnumerator HideInfoAfterDelay(float time)
     {
-        if (errorUI != null)
-        {
-            errorUI.SetActive(true);
+        yield return new WaitForSeconds(time);
 
-            TextMeshProUGUI txt = errorUI.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt != null)
-                txt.text = message;
-
-            StartCoroutine(HideAfter(errorUI, 2f));
-        }
+        infoPanel.SetActive(false);
+        hintText.gameObject.SetActive(true);
     }
 
-    // ✅ SUCCESS UI
+    public void ShowError(string msg = "Incomplete Structure")
+    {
+        errorUI.SetActive(true);
+
+        var txt = errorUI.GetComponentInChildren<TextMeshProUGUI>();
+        if (txt != null)
+            txt.text = msg;
+
+        StartCoroutine(HideAfter(errorUI, 2f));
+    }
+
     void ShowSuccess()
     {
-        if (successUI != null)
-        {
-            successUI.SetActive(true);
-            StartCoroutine(HideAfter(successUI, 2f));
-        }
+        successUI.SetActive(true);
+        StartCoroutine(HideAfter(successUI, 2f));
     }
 
-    // 💾 SAVE UI
     void ShowSave()
     {
-        if (saveUI != null)
-        {
-            saveUI.SetActive(true);
-            StartCoroutine(HideAfter(saveUI, 2f));
-        }
+        saveUI.SetActive(true);
+        StartCoroutine(HideAfter(saveUI, 2f));
     }
 
-    // ⏳ CLEAR ONLY TEXT (NOT PANEL)
-    IEnumerator HideInfo()
-    {
-        yield return new WaitForSeconds(3f);
-        infoText.text = "";
-    }
-
-    // ⏳ GENERIC HIDE FUNCTION
     IEnumerator HideAfter(GameObject obj, float time)
     {
         yield return new WaitForSeconds(time);

@@ -1,17 +1,4 @@
-//using UnityEngine;
-
-//public class AudioManager : MonoBehaviour
-//{
-//    public AudioSource source;
-//    public AudioClip successClip;
-
-//    public void PlaySuccess()
-//    {
-//        source.PlayOneShot(successClip);
-//    }
-//}   
-
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
@@ -19,13 +6,30 @@ public class AudioManager : MonoBehaviour
     public AudioClip grabClip;
     public AudioClip successClip;
 
+    private void Awake()
+    {
+        if (source == null)
+            source = GetComponent<AudioSource>();
+
+        if (source == null)
+            Debug.LogError("❌ AudioSource missing on AudioManager!");
+    }
+
     public void PlayGrab()
     {
-        source.PlayOneShot(grabClip);
+        if (source != null && grabClip != null)
+        {
+            Debug.Log("🔊 Grab sound");
+            source.PlayOneShot(grabClip);
+        }
     }
 
     public void PlaySuccess()
     {
-        source.PlayOneShot(successClip);
+        if (source != null && successClip != null)
+        {
+            Debug.Log("🔊 Success sound");
+            source.PlayOneShot(successClip);
+        }
     }
 }

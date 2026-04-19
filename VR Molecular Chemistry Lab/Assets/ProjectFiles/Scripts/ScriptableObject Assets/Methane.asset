@@ -15,5 +15,9 @@ MonoBehaviour:
   moleculeName: Methane
   formula: "CH\u2084"
   bondType: Covalent (Single)
-  requiredAtoms: 0200000000000000000000000000000000000000
+  requiredAtoms:
+  - atomType: 0
+    count: 4
+  - atomType: 2
+    count: 1
   moleculePrefab: {fileID: 7273538536201045991, guid: cc0e472b1016f6141b6dcd11d651d785, type: 3}

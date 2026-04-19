@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 5900954853406405705}
   - component: {fileID: -1118696166213682429}
   - component: {fileID: -2614649759458494791}
+  - component: {fileID: 5011330351970877791}
   m_Layer: 0
   m_Name: nh3
   m_TagString: Untagged
@@ -607,8 +608,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -764,6 +765,20 @@ CapsuleCollider:
   m_Height: 3.0328705
   m_Direction: 1
   m_Center: {x: 0.093847215, y: -0.30786127, z: -0.08106038}
+--- !u!114 &5011330351970877791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4215787724239472459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1621c7e3c4fcad14481855bae98d007f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
+  data: {fileID: 11400000, guid: be0100f14242fd941b78c7b7e60aa8c1, type: 2}
+  atomDatabase: {fileID: 0}
 --- !u!1 &4499770646663699694
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,5 +15,9 @@ MonoBehaviour:
   moleculeName: Water
   formula: " H\u2082O"
   bondType: Covalent (Single)
-  requiredAtoms: 000000000000000001000000
+  requiredAtoms:
+  - atomType: 0
+    count: 2
+  - atomType: 1
+    count: 1
   moleculePrefab: {fileID: 6690073129258955757, guid: 7f9dafc9470a09d43b9f0714b7c9ee75, type: 3}

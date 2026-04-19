@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 8149783453250642714}
   - component: {fileID: -159897023217343763}
   - component: {fileID: -5866580010619066306}
+  - component: {fileID: 3322332407998576840}
   m_Layer: 0
   m_Name: co
   m_TagString: Untagged
@@ -153,8 +154,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -310,6 +311,20 @@ CapsuleCollider:
   m_Height: 4.8978777
   m_Direction: 0
   m_Center: {x: -0.11885136, y: -0.053821802, z: 0.1880391}
+--- !u!114 &3322332407998576840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43410646270966184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1621c7e3c4fcad14481855bae98d007f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
+  data: {fileID: 11400000, guid: d9239581e77dad343a22e295ffcad223, type: 2}
+  atomDatabase: {fileID: 0}
 --- !u!1 &1262763785316744638
 GameObject:
   m_ObjectHideFlags: 0

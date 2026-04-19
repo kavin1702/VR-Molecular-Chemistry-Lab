@@ -15,5 +15,11 @@ MonoBehaviour:
   moleculeName: Hydrogen Cyanide
   formula: ' HCN'
   bondType: 'Triple Bond '
-  requiredAtoms: 000000000200000003000000
+  requiredAtoms:
+  - atomType: 0
+    count: 1
+  - atomType: 2
+    count: 1
+  - atomType: 3
+    count: 1
   moleculePrefab: {fileID: 3286678265137231304, guid: 81f2806aeed09a246bff1184d3be1ccf, type: 3}

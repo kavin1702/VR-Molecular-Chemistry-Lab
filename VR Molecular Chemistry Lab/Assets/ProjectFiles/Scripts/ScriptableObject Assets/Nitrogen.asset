@@ -15,5 +15,9 @@ MonoBehaviour:
   moleculeName: Nitrogen Gas
   formula: "N\u2082"
   bondType: Triple Bond
-  requiredAtoms: 0300000003000000
+  requiredAtoms:
+  - atomType: 3
+    count: 1
+  - atomType: 3
+    count: 1
   moleculePrefab: {fileID: 1096107573043799541, guid: 5d3789f22162aea42a0ebeb12960d744, type: 3}

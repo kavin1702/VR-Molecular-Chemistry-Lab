@@ -5,13 +5,21 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class MoleculeController : MonoBehaviour
 {
     public MoleculeData data;
-    public GameObject atomPrefab;
 
+    private AtomPrefabDatabase atomDatabase;
     private XRGrabInteractable grab;
 
     private void Awake()
     {
         grab = GetComponent<XRGrabInteractable>();
+
+        // ✅ AUTO FIND DATABASE (IMPORTANT FIX)
+        atomDatabase = FindObjectOfType<AtomPrefabDatabase>();
+
+        if (atomDatabase == null)
+        {
+            Debug.LogError("❌ AtomDatabase NOT FOUND in scene!");
+        }
     }
 
     private void OnEnable()
@@ -26,8 +34,7 @@ public class MoleculeController : MonoBehaviour
 
     void OnGrab(SelectEnterEventArgs args)
     {
-        Debug.Log("Breaking molecule: " + data.moleculeName);
-
+        Debug.Log("🧬 Breaking: " + data.moleculeName);
         BreakMolecule();
     }
 
@@ -35,13 +42,31 @@ public class MoleculeController : MonoBehaviour
     {
         Vector3 center = transform.position;
 
-        foreach (var atomType in data.requiredAtoms)
+        foreach (var req in data.requiredAtoms)
         {
-            Vector3 offset = Random.insideUnitSphere * 0.3f;
+            Debug.Log("Spawning: " + req.atomType + " x" + req.count);
 
-            GameObject atom = Instantiate(atomPrefab, center + offset, Quaternion.identity);
+            for (int i = 0; i < req.count; i++)
+            {
+                GameObject prefab = atomDatabase.GetPrefab(req.atomType);
 
-            atom.GetComponent<AtomController>().atomType = atomType;
+                if (prefab == null)
+                {
+                    Debug.LogError("❌ Missing prefab for: " + req.atomType);
+                    continue;
+                }
+
+                Vector3 offset = Random.insideUnitSphere * 0.3f;
+
+                GameObject atom = Instantiate(prefab, center + offset, Quaternion.identity);
+
+                // ✅ SAFE SET TYPE
+                AtomController controller = atom.GetComponent<AtomController>();
+                if (controller != null)
+                {
+                    controller.atomType = req.atomType;
+                }
+            }
         }
 
         Destroy(gameObject);

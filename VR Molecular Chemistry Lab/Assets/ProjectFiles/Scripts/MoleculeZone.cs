@@ -1,18 +1,11 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class MoleculeZone : MonoBehaviour
 {
-    public static MoleculeZone Instance;
-
-    public List<AtomController> atomsInZone = new List<AtomController>();
-
     public BondManager bondManager;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private List<AtomController> atomsInZone = new List<AtomController>();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,7 +14,7 @@ public class MoleculeZone : MonoBehaviour
         if (atom != null && !atomsInZone.Contains(atom))
         {
             atomsInZone.Add(atom);
-            Debug.Log("Added: " + atom.atomType);
+            Debug.Log("🟢 Atom Entered: " + atom.atomType);
         }
     }
 
@@ -32,26 +25,18 @@ public class MoleculeZone : MonoBehaviour
         if (atom != null && atomsInZone.Contains(atom))
         {
             atomsInZone.Remove(atom);
-            Debug.Log("Removed: " + atom.atomType);
+            Debug.Log("🔴 Atom Removed: " + atom.atomType);
         }
     }
 
+    // 🔥 CALL THIS WHEN USER RELEASES ATOM (IMPORTANT)
     public void CheckMolecule()
     {
-        if (bondManager == null)
+        Debug.Log("🧪 Checking Molecule with count: " + atomsInZone.Count);
+
+        if (bondManager != null)
         {
-            Debug.LogError("BondManager missing!");
-            return;
+            bondManager.TryCreateMolecule(new List<AtomController>(atomsInZone));
         }
-
-        if (atomsInZone.Count < 2)
-        {
-            Debug.Log("Not enough atoms");
-            return;
-        }
-
-        Debug.Log("Checking molecule with count: " + atomsInZone.Count);
-
-        bondManager.TryCreateMolecule(new List<AtomController>(atomsInZone));
     }
 }
