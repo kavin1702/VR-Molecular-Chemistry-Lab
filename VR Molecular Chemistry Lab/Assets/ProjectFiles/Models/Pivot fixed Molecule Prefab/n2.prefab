@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 1109736386873032988}
   m_Layer: 0
   m_Name: n2
-  m_TagString: Untagged
+  m_TagString: Molecule
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -414,7 +414,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
   data: {fileID: 11400000, guid: 87df5e2bcb48ced4f90c3b09f07c263a, type: 2}
-  atomDatabase: {fileID: 0}
 --- !u!1 &3173297329362801378
 GameObject:
   m_ObjectHideFlags: 0

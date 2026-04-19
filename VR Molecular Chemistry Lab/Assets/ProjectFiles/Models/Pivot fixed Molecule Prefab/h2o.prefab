@@ -465,7 +465,7 @@ GameObject:
   - component: {fileID: 1731243654485725770}
   m_Layer: 0
   m_Name: h2o
-  m_TagString: Untagged
+  m_TagString: Molecule
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -506,7 +506,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
   data: {fileID: 11400000, guid: 8555291b85c71ea40ad8dfdb52a0b8a0, type: 2}
-  atomDatabase: {fileID: 0}
 --- !u!54 &-6232102737675381758
 Rigidbody:
   m_ObjectHideFlags: 0

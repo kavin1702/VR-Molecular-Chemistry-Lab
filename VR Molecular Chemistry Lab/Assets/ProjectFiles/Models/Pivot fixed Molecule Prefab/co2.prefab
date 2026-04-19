@@ -915,7 +915,7 @@ GameObject:
   - component: {fileID: 2383135449109096640}
   m_Layer: 0
   m_Name: co2
-  m_TagString: Untagged
+  m_TagString: Molecule
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1137,4 +1137,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeController
   data: {fileID: 11400000, guid: 747549a8b91a67b498bbc29a2f5e1e95, type: 2}
-  atomDatabase: {fileID: 0}

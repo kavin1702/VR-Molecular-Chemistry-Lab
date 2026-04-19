@@ -7,63 +7,98 @@ public class AtomController : MonoBehaviour
     public AtomType atomType;
 
     private XRGrabInteractable grab;
-    private MoleculeZone currentZone;
+    private Rigidbody rb;
 
     private void Awake()
     {
         grab = GetComponent<XRGrabInteractable>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
     {
-        grab.selectEntered.AddListener(OnGrab);
-        grab.selectExited.AddListener(OnRelease);
+        if (grab != null)
+        {
+            grab.selectEntered.AddListener(OnGrabbed);
+            grab.selectExited.AddListener(OnReleased);
+        }
     }
 
     private void OnDisable()
     {
-        grab.selectEntered.RemoveListener(OnGrab);
-        grab.selectExited.RemoveListener(OnRelease);
-    }
-
-    // ✅ THIS FIXES YOUR ERROR
-    public void SetAtomType(AtomType type)
-    {
-        atomType = type;
-    }
-
-    void OnGrab(SelectEnterEventArgs args)
-    {
-        Debug.Log("🟡 Grabbed: " + atomType);
-
-        AudioManager audio = FindObjectOfType<AudioManager>();
-        if (audio != null)
-            audio.PlayGrab();
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("MoleculeZone"))
+        if (grab != null)
         {
-            currentZone = other.GetComponent<MoleculeZone>();
+            grab.selectEntered.RemoveListener(OnGrabbed);
+            grab.selectExited.RemoveListener(OnReleased);
         }
     }
 
-    void OnTriggerExit(Collider other)
+    // 🟢 GRAB EVENT
+    void OnGrabbed(SelectEnterEventArgs args)
     {
-        if (other.CompareTag("MoleculeZone"))
+        Debug.Log("🤏 Grabbed: " + atomType);
+
+        // ✅ Ensure physics works while holding
+        if (rb != null)
+            rb.isKinematic = false;
+
+        // ✅ Remove from zone immediately (VERY IMPORTANT)
+        if (MoleculeZone.Instance != null)
+            MoleculeZone.Instance.RemoveAtom(this);
+
+        // 🔊 PLAY GRAB SFX (FINAL FIX)
+        AudioManager am = FindAnyObjectByType<AudioManager>();
+        if (am != null)
         {
-            currentZone = null;
+            am.PlayGrab();
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ AudioManager NOT found!");
         }
     }
 
-    void OnRelease(SelectExitEventArgs args)
+    // 🔵 RELEASE EVENT
+    void OnReleased(SelectExitEventArgs args)
     {
         Debug.Log("🖐 Released: " + atomType);
+        // XR Toolkit handles physics automatically
+    }
 
-        if (currentZone != null)
+    // 🟡 ENTER ZONE
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("MoleculeZone"))
         {
-            currentZone.CheckMolecule();
+            MoleculeZone zone = other.GetComponent<MoleculeZone>();
+            if (zone != null)
+            {
+                Debug.Log("🟢 Enter Zone: " + atomType);
+                zone.AddAtom(this);
+            }
+        }
+    }
+
+    // 🔴 EXIT ZONE
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("MoleculeZone"))
+        {
+            MoleculeZone zone = other.GetComponent<MoleculeZone>();
+            if (zone != null)
+            {
+                Debug.Log("🔴 Exit Zone: " + atomType);
+                zone.RemoveAtom(this);
+            }
+        }
+    }
+
+    // 🧹 CLEANUP
+    private void OnDestroy()
+    {
+        if (MoleculeZone.Instance != null)
+        {
+            MoleculeZone.Instance.RemoveAtom(this);
         }
     }
 }

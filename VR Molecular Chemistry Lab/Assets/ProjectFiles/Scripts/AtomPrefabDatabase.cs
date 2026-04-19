@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class AtomPrefabEntry
@@ -9,17 +10,17 @@ public class AtomPrefabEntry
 
 public class AtomPrefabDatabase : MonoBehaviour
 {
-    public AtomPrefabEntry[] atomPrefabs;
+    public List<AtomPrefabEntry> atomPrefabs;
 
     public GameObject GetPrefab(AtomType type)
     {
-        foreach (var entry in atomPrefabs)
+        foreach (var item in atomPrefabs)
         {
-            if (entry.type == type)
-                return entry.prefab;
+            if (item.type == type)
+                return item.prefab;
         }
 
-        Debug.LogError("❌ No prefab found for: " + type);
+        Debug.LogError("❌ Prefab not found: " + type);
         return null;
     }
-}   
+}

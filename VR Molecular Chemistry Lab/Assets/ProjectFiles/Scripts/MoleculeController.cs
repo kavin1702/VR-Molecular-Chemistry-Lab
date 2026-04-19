@@ -1,71 +1,46 @@
 ﻿using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class MoleculeController : MonoBehaviour
 {
     public MoleculeData data;
 
     private AtomPrefabDatabase atomDatabase;
-    private XRGrabInteractable grab;
+    private bool isBroken = false;
 
     private void Awake()
     {
-        grab = GetComponent<XRGrabInteractable>();
+        atomDatabase = FindAnyObjectByType<AtomPrefabDatabase>();
+    }
 
-        // ✅ AUTO FIND DATABASE (IMPORTANT FIX)
-        atomDatabase = FindObjectOfType<AtomPrefabDatabase>();
+    // 🔥 RECEIVE BREAK POSITION
+    public void BreakFromZone(Vector3 breakPosition)
+    {
+        if (isBroken) return;
 
-        if (atomDatabase == null)
+        if (atomDatabase == null || data == null)
         {
-            Debug.LogError("❌ AtomDatabase NOT FOUND in scene!");
+            Debug.LogError("❌ Missing Database or Data!");
+            return;
         }
-    }
 
-    private void OnEnable()
-    {
-        grab.selectEntered.AddListener(OnGrab);
-    }
-
-    private void OnDisable()
-    {
-        grab.selectEntered.RemoveListener(OnGrab);
-    }
-
-    void OnGrab(SelectEnterEventArgs args)
-    {
-        Debug.Log("🧬 Breaking: " + data.moleculeName);
-        BreakMolecule();
-    }
-
-    void BreakMolecule()
-    {
-        Vector3 center = transform.position;
+        isBroken = true;
 
         foreach (var req in data.requiredAtoms)
         {
-            Debug.Log("Spawning: " + req.atomType + " x" + req.count);
-
             for (int i = 0; i < req.count; i++)
             {
                 GameObject prefab = atomDatabase.GetPrefab(req.atomType);
+                if (prefab == null) continue;
 
-                if (prefab == null)
-                {
-                    Debug.LogError("❌ Missing prefab for: " + req.atomType);
-                    continue;
-                }
+                Vector3 offset = Random.insideUnitSphere * 0.5f;
 
-                Vector3 offset = Random.insideUnitSphere * 0.3f;
+                GameObject atom = Instantiate(
+                    prefab,
+                    breakPosition + offset,   // ✅ FIXED HERE
+                    Quaternion.identity
+                );
 
-                GameObject atom = Instantiate(prefab, center + offset, Quaternion.identity);
-
-                // ✅ SAFE SET TYPE
-                AtomController controller = atom.GetComponent<AtomController>();
-                if (controller != null)
-                {
-                    controller.atomType = req.atomType;
-                }
+                atom.GetComponent<AtomController>().atomType = req.atomType;
             }
         }
 

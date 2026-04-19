@@ -1,98 +1,144 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("Hint")]
     public TextMeshProUGUI hintText;
 
+    [Header("Info Panel")]
     public GameObject infoPanel;
     public TextMeshProUGUI infoText;
 
+    [Header("Library")]
     public Transform libraryContent;
     public GameObject textPrefab;
 
+    [Header("Feedback UI")]
     public GameObject successUI;
     public GameObject errorUI;
     public GameObject saveUI;
 
-    private HashSet<string> discovered = new HashSet<string>();
-    private Coroutine infoRoutine;
-
     void Start()
     {
-        hintText.gameObject.SetActive(true);
-        infoPanel.SetActive(false);
+        // ✅ Hint visible at start
+        if (hintText != null)
+            hintText.gameObject.SetActive(true);
 
-        successUI.SetActive(false);
-        errorUI.SetActive(false);
-        saveUI.SetActive(false);
-    }
+        // ✅ Info panel always visible (only text changes)
+        if (infoPanel != null)
+            infoPanel.SetActive(true);
 
-    public void ShowMolecule(MoleculeData data)
-    {
-        if (infoRoutine != null)
-            StopCoroutine(infoRoutine);
+        // ✅ Clear info text initially
+        if (infoText != null)
+            infoText.text = "";
 
-        hintText.gameObject.SetActive(false);
-        infoPanel.SetActive(true);
-
-        infoText.text =
-            "Name: " + data.moleculeName + "\n" +
-            "Formula: " + data.formula + "\n" +
-            "Bond: " + data.bondType;
-
-        ShowSuccess();
-
-        if (!discovered.Contains(data.moleculeName))
+        // ✅ Clear old library items (IMPORTANT)
+        if (libraryContent != null)
         {
-            discovered.Add(data.moleculeName);
-
-            GameObject entry = Instantiate(textPrefab, libraryContent);
-            entry.GetComponent<TextMeshProUGUI>().text =
-                data.moleculeName + " (" + data.formula + ")";
-
-            ShowSave();
+            foreach (Transform child in libraryContent)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
-        infoRoutine = StartCoroutine(HideInfoAfterDelay(5f));
+        // ✅ Hide feedback UI initially
+        if (successUI != null) successUI.SetActive(false);
+        if (errorUI != null) errorUI.SetActive(false);
+        if (saveUI != null) saveUI.SetActive(false);
     }
 
-    IEnumerator HideInfoAfterDelay(float time)
+    // 🟢 SUCCESS MOLECULE
+    public void ShowMolecule(MoleculeData data)
     {
-        yield return new WaitForSeconds(time);
+        if (data == null) return;
 
-        infoPanel.SetActive(false);
-        hintText.gameObject.SetActive(true);
+        // ✅ Hide hint only
+        if (hintText != null)
+            hintText.gameObject.SetActive(false);
+
+        // ✅ Update info text ONLY (panel stays active)
+        if (infoText != null)
+        {
+            infoText.text =
+                "Name: " + data.moleculeName + "\n" +
+                "Formula: " + data.formula + "\n" +
+                "Bond: " + data.bondType;
+        }
+
+        // ✅ Add to library (no overlap)
+        AddToLibrary(data.moleculeName);
+
+        // ✅ Show success UI
+        ShowSuccess();
     }
 
-    public void ShowError(string msg = "Incomplete Structure")
+    // 📚 ADD TO LIBRARY
+    void AddToLibrary(string name)
     {
-        errorUI.SetActive(true);
+        if (libraryContent == null || textPrefab == null) return;
 
-        var txt = errorUI.GetComponentInChildren<TextMeshProUGUI>();
+        GameObject item = Instantiate(textPrefab, libraryContent);
+
+        TextMeshProUGUI txt = item.GetComponent<TextMeshProUGUI>();
         if (txt != null)
-            txt.text = msg;
-
-        StartCoroutine(HideAfter(errorUI, 2f));
+        {
+            txt.text = name;
+        }
     }
 
-    void ShowSuccess()
+    // 🔴 ERROR (AUTO HIDE AFTER 2 SEC)
+    public void ShowError(string msg)
     {
-        successUI.SetActive(true);
-        StartCoroutine(HideAfter(successUI, 2f));
+        if (errorUI != null)
+        {
+            errorUI.SetActive(true);
+            StartCoroutine(HideErrorAfterDelay());
+        }
     }
 
-    void ShowSave()
+    IEnumerator HideErrorAfterDelay()
     {
-        saveUI.SetActive(true);
-        StartCoroutine(HideAfter(saveUI, 2f));
+        yield return new WaitForSeconds(2f);
+
+        if (errorUI != null)
+            errorUI.SetActive(false);
     }
 
-    IEnumerator HideAfter(GameObject obj, float time)
+    // 🟢 SUCCESS UI
+    public void ShowSuccess()
     {
-        yield return new WaitForSeconds(time);
-        obj.SetActive(false);
+        if (successUI != null)
+        {
+            successUI.SetActive(true);
+            StartCoroutine(HideSuccessAfterDelay());
+        }
+    }
+
+    IEnumerator HideSuccessAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+
+        if (successUI != null)
+            successUI.SetActive(false);
+    }
+
+    // 💾 SAVE UI (OPTIONAL)
+    public void ShowSave()
+    {
+        if (saveUI != null)
+        {
+            saveUI.SetActive(true);
+            StartCoroutine(HideSaveAfterDelay());
+        }
+    }
+
+    IEnumerator HideSaveAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+
+        if (saveUI != null)
+            saveUI.SetActive(false);
     }
 }

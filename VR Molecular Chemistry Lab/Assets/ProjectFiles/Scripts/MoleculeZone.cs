@@ -3,40 +3,92 @@ using UnityEngine;
 
 public class MoleculeZone : MonoBehaviour
 {
-    public BondManager bondManager;
+    public static MoleculeZone Instance;
 
-    private List<AtomController> atomsInZone = new List<AtomController>();
+    public List<AtomController> atomsInZone = new List<AtomController>();
 
-    private void OnTriggerEnter(Collider other)
+    public bool isProcessing = false;
+
+    private void Awake()
     {
-        AtomController atom = other.GetComponent<AtomController>();
+        Instance = this;
+    }
 
-        if (atom != null && !atomsInZone.Contains(atom))
+    // =========================
+    // ADD ATOM
+    // =========================
+    public void AddAtom(AtomController atom)
+    {
+        if (atom == null || isProcessing) return;
+
+        if (!atomsInZone.Contains(atom))
         {
             atomsInZone.Add(atom);
-            Debug.Log("🟢 Atom Entered: " + atom.atomType);
+            Debug.Log("➕ Added: " + atom.atomType);
+
+            TryFormMolecule();
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    // =========================
+    // REMOVE ATOM
+    // =========================
+    public void RemoveAtom(AtomController atom)
     {
-        AtomController atom = other.GetComponent<AtomController>();
+        if (atom == null) return;
 
-        if (atom != null && atomsInZone.Contains(atom))
+        if (atomsInZone.Contains(atom))
         {
             atomsInZone.Remove(atom);
-            Debug.Log("🔴 Atom Removed: " + atom.atomType);
+            Debug.Log("➖ Removed: " + atom.atomType);
         }
     }
 
-    // 🔥 CALL THIS WHEN USER RELEASES ATOM (IMPORTANT)
-    public void CheckMolecule()
+    // =========================
+    // DELAYED CHECK (🔥 MAIN FIX)
+    // =========================
+    void TryFormMolecule()
     {
-        Debug.Log("🧪 Checking Molecule with count: " + atomsInZone.Count);
+        if (isProcessing) return;
 
-        if (bondManager != null)
+        // Prevent multiple rapid calls
+        CancelInvoke(nameof(ProcessMolecule));
+
+        // 🔥 IMPORTANT DELAY (fixes your issue)
+        Invoke(nameof(ProcessMolecule), 0.2f);
+    }
+
+    // =========================
+    // FINAL PROCESS
+    // =========================
+    void ProcessMolecule()
+    {
+        if (isProcessing) return;
+
+        // Clean destroyed atoms
+        atomsInZone.RemoveAll(a => a == null);
+
+        if (atomsInZone.Count == 0) return;
+
+        Debug.Log("🧪 FINAL CHECK COUNT: " + atomsInZone.Count);
+
+        BondManager manager = FindAnyObjectByType<BondManager>();
+
+        if (manager != null)
         {
-            bondManager.TryCreateMolecule(new List<AtomController>(atomsInZone));
+            manager.TryCreateMolecule(new List<AtomController>(atomsInZone));
         }
+        else
+        {
+            Debug.LogError("❌ BondManager NOT FOUND!");
+        }
+    }
+
+    // =========================
+    // CLEAR AFTER SUCCESS
+    // =========================
+    public void ClearZone()
+    {
+        atomsInZone.Clear();
     }
 }

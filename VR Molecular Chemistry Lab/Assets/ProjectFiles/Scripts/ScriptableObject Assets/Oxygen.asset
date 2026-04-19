@@ -17,7 +17,5 @@ MonoBehaviour:
   bondType: Double Bond
   requiredAtoms:
   - atomType: 1
-    count: 1
-  - atomType: 1
-    count: 1
+    count: 2
   moleculePrefab: {fileID: 456385511067110783, guid: 3da44bde216cf57488990f45789fb298, type: 3}

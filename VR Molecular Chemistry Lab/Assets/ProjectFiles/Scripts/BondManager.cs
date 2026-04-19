@@ -6,80 +6,62 @@ public class BondManager : MonoBehaviour
 {
     public List<MoleculeData> moleculeDatabase;
     public UIManager uiManager;
-    public AudioManager audioManager; // ✅ assign in inspector
+    public AudioManager audioManager;
 
     public void TryCreateMolecule(List<AtomController> atoms)
     {
-        if (atoms == null || atoms.Count == 0)
-        {
-            Debug.Log("⚠ No atoms provided");
-            return;
-        }
+        if (MoleculeZone.Instance.isProcessing) return;
+
+        atoms = atoms.Where(a => a != null).ToList();
+        if (atoms.Count == 0) return;
 
         List<AtomType> input = atoms.Select(a => a.atomType).ToList();
 
-        Debug.Log("🧪 Input Atoms: " + string.Join(", ", input));
+        Debug.Log("🧪 Input: " + string.Join(", ", input));
 
         foreach (var molecule in moleculeDatabase)
         {
-            Debug.Log("🔍 Checking: " + molecule.moleculeName);
-
             if (MatchAtoms(input, molecule.requiredAtoms))
             {
                 Debug.Log("✅ MATCH FOUND: " + molecule.moleculeName);
 
+                MoleculeZone.Instance.isProcessing = true;
+
                 CreateMolecule(molecule, atoms);
 
-                if (uiManager != null)
-                    uiManager.ShowMolecule(molecule);
+                uiManager?.ShowMolecule(molecule);
+                audioManager?.PlaySuccess();
 
-                if (audioManager != null)
-                    audioManager.PlaySuccess();
-
+                Invoke(nameof(UnlockZone), 0.5f);
                 return;
             }
         }
 
-        Debug.Log("❌ No matching molecule found");
-
-        if (uiManager != null)
-            uiManager.ShowError("Incomplete Structure");
+        uiManager?.ShowError("Invalid Structure");
     }
 
-    // 🔥 STRICT MATCH (NO EXTRA ATOMS)
+    void UnlockZone()
+    {
+        MoleculeZone.Instance.ClearZone();
+        MoleculeZone.Instance.isProcessing = false;
+    }
+
     bool MatchAtoms(List<AtomType> input, List<AtomRequirement> required)
     {
-        Dictionary<AtomType, int> inputCount = new Dictionary<AtomType, int>();
+        Dictionary<AtomType, int> count = new Dictionary<AtomType, int>();
 
         foreach (var atom in input)
         {
-            if (!inputCount.ContainsKey(atom))
-                inputCount[atom] = 0;
+            if (!count.ContainsKey(atom))
+                count[atom] = 0;
 
-            inputCount[atom]++;
-        }
-
-        // 🔥 total count must match EXACTLY
-        int requiredTotal = required.Sum(r => r.count);
-        if (input.Count != requiredTotal)
-        {
-            Debug.Log("❌ Count mismatch");
-            return false;
+            count[atom]++;
         }
 
         foreach (var req in required)
         {
-            if (!inputCount.ContainsKey(req.atomType))
-            {
-                Debug.Log("❌ Missing atom: " + req.atomType);
-                return false;
-            }
-
-            if (inputCount[req.atomType] != req.count)
-            {
-                Debug.Log("❌ Wrong count for: " + req.atomType);
-                return false;
-            }
+            if (!count.ContainsKey(req.atomType)) return false;
+            if (count[req.atomType] != req.count) return false;
         }
 
         return true;
@@ -87,15 +69,14 @@ public class BondManager : MonoBehaviour
 
     void CreateMolecule(MoleculeData molecule, List<AtomController> atoms)
     {
-        Vector3 spawnPos = atoms[0].transform.position;
-
-        Debug.Log("🧬 Creating Molecule: " + molecule.moleculeName);
+        Vector3 pos = atoms[0].transform.position;
 
         foreach (var atom in atoms)
         {
-            Destroy(atom.gameObject);
+            if (atom != null)
+                Destroy(atom.gameObject);
         }
 
-        Instantiate(molecule.moleculePrefab, spawnPos, Quaternion.identity);
+        Instantiate(molecule.moleculePrefab, pos, Quaternion.identity);
     }
 }
